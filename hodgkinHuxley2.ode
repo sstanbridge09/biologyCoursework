@@ -1,0 +1,36 @@
+# Hodgkin-Huxley-like model with fast and slow gating
+# Corrected units
+
+# Parameters (original units)
+par C=2, gfast=20, gslow=20, gleak=2
+par ENa=50, EK=-100, Eleak=-70
+par bm=-1.2, cm=18, bw=-8, cw=10, phiw=0.15
+
+# External stimulus
+par Istim = 10
+
+# Steady-state activation functions
+minf(V) = 0.5*(1 + tanh((V - bm)/cm))
+winf(V) = 0.5*(1 + tanh((V - bw)/cw))
+tauw(V) = 1/cosh((V - bw)/(2*cw))
+
+# ODEs
+V' = (Istim - gfast*minf(V)*(V - ENa) - gslow*w*(V - EK) - gleak*(V - Eleak))/C
+w' = phiw*(winf(V) - w)/tauw(V)
+
+# Initial conditions
+init V=-65, w=0.1
+
+# Set the plotting ranges
+@ XP = V 
+@ YP = w
+@ XMAX = 50
+@ XMIN = -80
+@ YMAX =  0.4
+@ YMIN = -0.1
+
+@ total=200, dt=0.01
+@ bounds=10000
+@ maxstor=500000
+
+done
